@@ -1,38 +1,47 @@
 'use client';
 
-import { Canvas, useLoader } from '@react-three/fiber';
+import { Canvas, useLoader, useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
-import { useScroll } from 'framer-motion';
 import { TextureLoader } from 'three';
 import { motion } from 'framer-motion-3d';
 
-export default function Earth() {
-  const scene = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: scene,
-    offset: ['start end', 'end start'],
+function RotatingEarth() {
+  const earthRef = useRef<any>(null);
+  const [color, normal, aoMap] = useLoader(TextureLoader, [
+    '/assets/color.jpg',
+    '/assets/normal.png',
+    '/assets/occlusion.jpg'
+  ]);
+
+  useFrame((state, delta) => {
+    if (earthRef.current) {
+      earthRef.current.rotation.y += 0.002;
+    }
   });
 
-  const [color, normal, aoMap] = useLoader(TextureLoader, ['/assets/color.jpg', '/assets/normal.png', '/assets/occlusion.jpg']);
+  return (
+    <motion.mesh ref={earthRef} scale={2.5} rotation-y={0}>
+      <sphereGeometry args={[1, 64, 64]} />
+      <meshStandardMaterial
+        map={color}
+        normalMap={normal}
+        aoMap={aoMap}
+      />
+    </motion.mesh>
+  );
+}
+
+export default function Earth() {
+  const scene = useRef(null);
 
   return (
     <Canvas ref={scene}>
-      <ambientLight intensity={0.2} />
+      <ambientLight intensity={0.5} />
       <directionalLight
-        intensity={3.5}
+        intensity={5.5}
         position={[1, 0, -0.25]}
       />
-      <motion.mesh
-        scale={2.5}
-        rotation-y={scrollYProgress}
-        >
-        <sphereGeometry args={[1, 64, 64]} />
-        <meshStandardMaterial
-          map={color}
-          normalMap={normal}
-          aoMap={aoMap}
-        />
-      </motion.mesh>
+      <RotatingEarth />
     </Canvas>
   );
 }

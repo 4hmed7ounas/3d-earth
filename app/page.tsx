@@ -14,12 +14,9 @@ const Earth = dynamic(() => import('@/components/earth/earth'), {
 export default function Home() {
   return (
     <SmoothScroll>
-      <div className="flex justify-center items-center content-center h-screen">
-        <h1 className="font-bold text-5xl text-white">Scroll</h1>
-      </div>
-      <main className="h-[60vw] bg-[#0f0f0f] relative flex items-center justify-center my-64">
+      <main className="h-screen bg-[#0f0f0f] relative flex items-center justify-center ">
         <Earth />
-        <Project />
+        {/* <Project /> */}
       </main>
     </SmoothScroll>
   );
